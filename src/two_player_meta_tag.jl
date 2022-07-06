@@ -7,12 +7,15 @@ function two_player_meta_tag(;
         state_bounds = (; lb = [-Inf, -Inf, -5, -5], ub = [Inf, Inf, 5, 5]),
         control_bounds = (; lb = [-10, -10], ub = [10, 10]),
     ),
+    distance_metric = norm,
 )
     cost = let
         function stage_cost(x, u, t, context_state)
             x1, x2 = blocks(x)
             u1, u2 = blocks(u)
-            c = sqrt(norm(x1[1:2] - x2[1:2]) + 0.1) + control_penalty * (norm(u1) - norm(u2))
+            c =
+                sqrt(distance_metric(x1[1:2] - x2[1:2]) + 0.1) +
+                control_penalty * (distance_metric(u1) - distance_metric(u2))
             [c, -c]
         end
 
