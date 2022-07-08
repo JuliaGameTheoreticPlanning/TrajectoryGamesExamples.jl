@@ -20,6 +20,7 @@ end
 
 Base.@kwdef struct UnicycleDynamics{T1,T2} <: AbstractDynamics
     dt::Float64 = 0.1
+    m::Float64 = 1.0
     state_bounds::T1 = (; lb = [-Inf, -Inf, -Inf, -Inf], ub = [Inf, Inf, Inf, Inf])
     control_bounds::T2 = (; lb = [-Inf, -Inf], ub = [Inf, Inf])
 end
@@ -38,11 +39,12 @@ end
 
 function (sys::UnicycleDynamics)(state, control, t)
     px, py, v, θ = state
-    a, ω = control
+    F, τ = control
     dt = sys.dt
+    m = sys.m
 
     # next state
-    [px + cos(θ) * dt, py + sin(θ) * dt, v + a * dt, θ + ω * dt]
+    [px + cos(θ) * dt, py + sin(θ) * dt, v + F * dt / m, θ + τ * dt / m]
 end
 
 wrap_pi(x) = mod2pi(x + pi) - pi
