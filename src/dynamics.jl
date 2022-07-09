@@ -9,10 +9,10 @@ function planar_double_integrator(; dt = 0.1, m = 1, kwargs...)
             0.0 0.0 0.0 1.0
         ],
         B = [
-            dt2    0.0
-            0.0    dt2
+            dt2 0.0
+            0.0 dt2
             dt / m 0.0
-            0.0    dt / m
+            0.0 dt / m
         ],
         kwargs...,
     )
