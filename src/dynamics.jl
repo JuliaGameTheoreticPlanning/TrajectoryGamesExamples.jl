@@ -11,9 +11,9 @@ function planar_double_integrator(; dt = 0.1, m = 1, kwargs...)
         B = [
             dt2 0.0
             0.0 dt2
-            dt / m 0.0
-            0.0 dt / m
-        ],
+            dt 0.0
+            0.0 dt
+        ] / m,
         kwargs...,
     )
 end
