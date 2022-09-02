@@ -6,6 +6,7 @@ function create_environment_axis(
     ylabel = "Vertical position [m]",
     xlabelpadding = 0,
     ylabelpadding = -5,
+    viz_kwargs = (;),
     axis_kwargs...,
 )
     points = environment.set.vertices
@@ -25,7 +26,7 @@ function create_environment_axis(
         axis_kwargs...,
     )
 
-    visualize!(environment_axis, environment)
+    visualize!(environment_axis, environment; viz_kwargs...)
     environment_axis
 end
 
