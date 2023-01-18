@@ -37,6 +37,14 @@ function TrajectoryGamesBase.control_dim(dynamics::UnicycleDynamics)
     2
 end
 
+function TrajectoryGamesBase.state_bounds(dynamics::UnicycleDynamics)
+    dynamics.state_bounds
+end
+
+function TrajectoryGamesBase.control_bounds(dynamics::UnicycleDynamics)
+    dynamics.control_bounds
+end
+
 function (sys::UnicycleDynamics)(state, control, t)
     px, py, v, θ = state
     F, τ = control
