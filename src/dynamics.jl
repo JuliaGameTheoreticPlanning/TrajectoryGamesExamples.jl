@@ -52,7 +52,7 @@ function (sys::UnicycleDynamics)(state, control, t)
     m = sys.m
 
     # next state
-    [px + cos(θ) * dt, py + sin(θ) * dt, v + F * dt / m, θ + τ * dt / m]
+    [px + cos(θ) * v * dt, py + sin(θ) * v * dt, v + F * dt / m, θ + τ * dt / m]
 end
 
 wrap_pi(x) = mod2pi(x + pi) - pi
