@@ -18,11 +18,26 @@ function planar_double_integrator(; dt = 0.1, m = 1, kwargs...)
     )
 end
 
-Base.@kwdef struct UnicycleDynamics{T1,T2} <: AbstractDynamics
-    dt::Float64 = 0.1
-    m::Float64 = 1.0
-    state_bounds::T1 = (; lb = [-Inf, -Inf, -Inf, -Inf], ub = [Inf, Inf, Inf, Inf])
-    control_bounds::T2 = (; lb = [-Inf, -Inf], ub = [Inf, Inf])
+struct UnicycleDynamics{T1,T2} <: AbstractDynamics
+    dt::Float64
+    m::Float64
+    state_bounds::T1
+    control_bounds::T2
+    integration_scheme::Symbol
+
+    function UnicycleDynamics(;
+        dt = 0.1,
+        m = 1.0,
+        state_bounds::T1 = (; lb = [-Inf, -Inf, -Inf, -Inf], ub = [Inf, Inf, Inf, Inf]),
+        control_bounds::T2 = (; lb = [-Inf, -Inf], ub = [Inf, Inf]),
+        integration_scheme = :forward_euler,
+    ) where {T1,T2}
+        supported_integration_schemes = (:forward_euler, :reverse_euler, :hybrid)
+        integration_scheme ∈ supported_integration_schemes || throw(
+            ArgumentError("integration_scheme must be one of $supported_integration_schemes"),
+        )
+        new{T1,T2}(dt, m, state_bounds, control_bounds, integration_scheme)
+    end
 end
 
 function TrajectoryGamesBase.horizon(sys::UnicycleDynamics)
@@ -51,8 +66,22 @@ function (sys::UnicycleDynamics)(state, control, t)
     dt = sys.dt
     m = sys.m
 
+    v′ = v + F * dt / m
+    θ′ = θ + τ * dt / m
+
+    if sys.integration_scheme === :forward_euler
+        px′ = px + cos(θ) * v * dt
+        py′ = py + sin(θ) * v * dt
+    elseif sys.integration_scheme === :hybrid
+        px′ = px + cos(θ) * (v * dt + 0.5 * F * dt^2 / m)
+        py′ = py + sin(θ) * (v * dt + 0.5 * F * dt^2 / m)
+    elseif sys.integration_scheme === :reverse_euler
+        px′ = px + cos(θ′) * v′ * dt
+        py′ = py + sin(θ′) * v′ * dt
+    end
+
     # next state
-    [px + cos(θ) * v * dt, py + sin(θ) * v * dt, v + F * dt / m, θ + τ * dt / m]
+    [px′, py′, v′, θ′]
 end
 
 wrap_pi(x) = mod2pi(x + pi) - pi
