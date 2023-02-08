@@ -1,3 +1,14 @@
+function get_default_visualization_limits(environment)
+    ((-5, 5), (-5, 5))
+end
+
+function get_default_visualization_limits(environment::PolygonEnvironment)
+    points = environment.set.vertices
+    x_limits = extrema(point -> point[1], points)
+    y_limits = extrema(point -> point[2], points)
+    (x_limits, y_limits)
+end
+
 function create_environment_axis(
     figure,
     environment;
@@ -7,12 +18,18 @@ function create_environment_axis(
     xlabelpadding = 0,
     ylabelpadding = -5,
     viz_kwargs = (;),
+    x_limits = nothing,
+    y_limits = nothing,
     axis_kwargs...,
 )
-    points = environment.set.vertices
+    x_limits_default, y_limits_default = get_default_visualization_limits(environment)
+
+    isnothing(x_limits) && (x_limits = x_limits_default)
+    isnothing(y_limits) && (y_limits = y_limits_default)
     limit_margins = (-margin, +margin)
-    x_limits = extrema(point -> point[1], points) .+ limit_margins
-    y_limits = extrema(point -> point[2], points) .+ limit_margins
+    x_limits = x_limits .+ limit_margins
+    y_limits = y_limits .+ limit_margins
+
     aspect = x_limits[2] / y_limits[2]
     limits = (x_limits, y_limits)
     environment_axis = Makie.Axis(
