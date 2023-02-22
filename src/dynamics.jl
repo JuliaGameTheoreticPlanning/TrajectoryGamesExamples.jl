@@ -94,7 +94,7 @@ struct BicycleDynamics{T1,T2} <: AbstractDynamics
 
     function BicycleDynamics(;
         dt = 0.1,
-        m = 1.0,
+        l = 1.0,
         state_bounds::T1 = (;
             lb = [-Inf, -Inf, -Inf, -Inf, -Inf, -Inf],
             ub = [Inf, Inf, Inf, Inf, Inf, Inf],
@@ -106,7 +106,7 @@ struct BicycleDynamics{T1,T2} <: AbstractDynamics
         supported_integration_schemes = (:forward_euler,)# :reverse_euler, :hybrid)
         integration_scheme ∈ supported_integration_schemes ||
             throw(ArgumentError("integration_scheme must be one of $supported_integration_schemes"))
-        new{T1,T2}(dt, m, state_bounds, control_bounds, integration_scheme)
+        new{T1,T2}(dt, l, state_bounds, control_bounds, integration_scheme)
     end
 end
 
