@@ -20,7 +20,7 @@ using Colors: @colorant_str
 
 # model tools
 include("dynamics.jl")
-export planar_double_integrator
+export planar_double_integrator, UnicycleDynamics, BicycleDynamics
 
 # test utils
 include("TestUtils.jl")

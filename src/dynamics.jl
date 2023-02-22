@@ -33,9 +33,8 @@ struct UnicycleDynamics{T1,T2} <: AbstractDynamics
         integration_scheme = :forward_euler,
     ) where {T1,T2}
         supported_integration_schemes = (:forward_euler, :reverse_euler, :hybrid)
-        integration_scheme ∈ supported_integration_schemes || throw(
-            ArgumentError("integration_scheme must be one of $supported_integration_schemes"),
-        )
+        integration_scheme ∈ supported_integration_schemes ||
+            throw(ArgumentError("integration_scheme must be one of $supported_integration_schemes"))
         new{T1,T2}(dt, m, state_bounds, control_bounds, integration_scheme)
     end
 end
@@ -85,3 +84,64 @@ function (sys::UnicycleDynamics)(state, control, t)
 end
 
 wrap_pi(x) = mod2pi(x + pi) - pi
+
+struct BicycleDynamics{T1,T2} <: AbstractDynamics
+    dt::Float64
+    l::Float64
+    state_bounds::T1
+    control_bounds::T2
+    integration_scheme::Symbol
+
+    function BicycleDynamics(;
+        dt = 0.1,
+        m = 1.0,
+        state_bounds::T1 = (;
+            lb = [-Inf, -Inf, -Inf, -Inf, -Inf, -Inf],
+            ub = [Inf, Inf, Inf, Inf, Inf, Inf],
+        ),
+        control_bounds::T2 = (; lb = [-Inf, -Inf], ub = [Inf, Inf]),
+        integration_scheme = :forward_euler,
+    ) where {T1,T2}
+        # only one supported integration scheme for now
+        supported_integration_schemes = (:forward_euler,)# :reverse_euler, :hybrid)
+        integration_scheme ∈ supported_integration_schemes ||
+            throw(ArgumentError("integration_scheme must be one of $supported_integration_schemes"))
+        new{T1,T2}(dt, m, state_bounds, control_bounds, integration_scheme)
+    end
+end
+
+function TrajectoryGamesBase.horizon(sys::BicycleDynamics)
+    ∞
+end
+
+function TrajectoryGamesBase.state_dim(dynamics::BicycleDynamics)
+    4
+end
+
+function TrajectoryGamesBase.control_dim(dynamics::BicycleDynamics)
+    2
+end
+
+function TrajectoryGamesBase.state_bounds(dynamics::BicycleDynamics)
+    dynamics.state_bounds
+end
+
+function TrajectoryGamesBase.control_bounds(dynamics::BicycleDynamics)
+    dynamics.control_bounds
+end
+
+function (sys::BicycleDynamics)(state, control, t)
+    px, py, v, θ = state
+    a, ϕ = control
+    dt = sys.dt
+    l = sys.l
+    sθ, cθ = sincos(θ)
+
+    # next state
+    px′ = px + cθ * v * dt
+    py′ = py + sθ * v * dt
+    v′ = v + a * dt
+    θ′ = θ + v / l * tan(ϕ) * dt
+
+    [px′, py′, v′, θ′]
+end
