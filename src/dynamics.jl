@@ -102,8 +102,7 @@ struct BicycleDynamics{T1,T2} <: AbstractDynamics
         control_bounds::T2 = (; lb = [-Inf, -Inf], ub = [Inf, Inf]),
         integration_scheme = :forward_euler,
     ) where {T1,T2}
-        # only one supported integration scheme for now
-        supported_integration_schemes = (:forward_euler,)# :reverse_euler, :hybrid)
+        supported_integration_schemes = (:forward_euler, :reverse_euler, :hybrid)
         integration_scheme ∈ supported_integration_schemes ||
             throw(ArgumentError("integration_scheme must be one of $supported_integration_schemes"))
         new{T1,T2}(dt, l, state_bounds, control_bounds, integration_scheme)
@@ -135,13 +134,23 @@ function (sys::BicycleDynamics)(state, control, t)
     a, ϕ = control
     dt = sys.dt
     l = sys.l
-    sθ, cθ = sincos(θ)
 
-    # next state
-    px′ = px + cθ * v * dt
-    py′ = py + sθ * v * dt
     v′ = v + a * dt
     θ′ = θ + v / l * tan(ϕ) * dt
+
+    if sys.integration_scheme === :forward_euler
+        sθ, cθ = sincos(θ)
+        px′ = px + cθ * v * dt
+        py′ = py + sθ * v * dt
+    elseif sys.integration_scheme === :hybrid
+        sθ, cθ = sincos(θ)
+        px′ = px + cθ * (v * dt + 0.5 * a * dt^2)
+        py′ = py + sθ * (v * dt + 0.5 * a * dt^2)
+    elseif sys.integration_scheme === :reverse_euler
+        sθ′, cθ′ = sincos(θ′)
+        px′ = px + cθ′ * v′ * dt
+        py′ = py + sθ′ * v′ * dt
+    end
 
     [px′, py′, v′, θ′]
 end
