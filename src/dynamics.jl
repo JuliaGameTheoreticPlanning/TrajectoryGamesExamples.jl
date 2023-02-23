@@ -135,8 +135,10 @@ function (sys::BicycleDynamics)(state, control, t)
     dt = sys.dt
     l = sys.l
 
+    tan_approx(x) = x - x^3 / 3 + x^5 / 5
+
     v′ = v + a * dt
-    θ′ = θ + v / l * tan(ϕ) * dt
+    θ′ = θ + v / l * tan_approx(ϕ) * dt
 
     if sys.integration_scheme === :forward_euler
         sθ, cθ = sincos(θ)
