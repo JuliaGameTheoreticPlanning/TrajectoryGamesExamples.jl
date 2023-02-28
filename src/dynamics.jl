@@ -136,19 +136,20 @@ function (sys::BicycleDynamics)(state, control, t)
     l = sys.l
 
     tan_approx(x) = x - x^3 / 3 + x^5 / 5
-
     v′ = v + a * dt
-    θ′ = θ + v / l * tan_approx(ϕ) * dt
 
     if sys.integration_scheme === :forward_euler
+        θ′ = θ + v / l * tan_approx(ϕ) * dt
         sθ, cθ = sincos(θ)
         px′ = px + cθ * v * dt
         py′ = py + sθ * v * dt
     elseif sys.integration_scheme === :hybrid
+        θ′ = θ + v′ / l * tan_approx(ϕ) * dt
         sθ, cθ = sincos(θ)
         px′ = px + cθ * (v * dt + 0.5 * a * dt^2)
         py′ = py + sθ * (v * dt + 0.5 * a * dt^2)
     elseif sys.integration_scheme === :reverse_euler
+        θ′ = θ + v′ / l * tan_approx(ϕ) * dt
         sθ′, cθ′ = sincos(θ′)
         px′ = px + cθ′ * v′ * dt
         py′ = py + sθ′ * v′ * dt
