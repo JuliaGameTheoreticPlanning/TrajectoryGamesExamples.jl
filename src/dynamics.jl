@@ -96,8 +96,8 @@ struct BicycleDynamics{T1,T2} <: AbstractDynamics
         dt = 0.1,
         l = 1.0,
         state_bounds::T1 = (;
-            lb = [-Inf, -Inf, -Inf, -Inf, -Inf, -Inf],
-            ub = [Inf, Inf, Inf, Inf, Inf, Inf],
+            lb = [-Inf, -Inf, -Inf, -Inf],
+            ub = [Inf, Inf, Inf, Inf],
         ),
         control_bounds::T2 = (; lb = [-Inf, -Inf], ub = [Inf, Inf]),
         integration_scheme = :forward_euler,
