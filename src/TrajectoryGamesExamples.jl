@@ -9,8 +9,7 @@ using TrajectoryGamesBase:
     TrajectoryGame,
     ZeroSumCostStructure,
     num_players,
-    time_invariant_linear_dynamics,
-    visualize!
+    time_invariant_linear_dynamics
 using LinearAlgebra: norm, norm_sqr
 using BlockArrays: Block, blocks, blocksize
 using InfiniteArrays: ∞
@@ -27,11 +26,7 @@ include("TestUtils.jl")
 
 # visualization
 include("visualize_simulation.jl")
-export animate_sim_steps,
-    create_environment_axis,#
-    visualize_players!,
-    visualize_obstacle_bounds!,
-    visualize_targets!
+export animate_sim_steps, visualize_sim_step, create_environment_axis
 
 # games
 include("two_player_meta_tag.jl")

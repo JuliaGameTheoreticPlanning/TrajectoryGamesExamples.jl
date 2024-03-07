@@ -30,7 +30,7 @@ function create_environment_axis(
     x_limits = x_limits .+ limit_margins
     y_limits = y_limits .+ limit_margins
 
-    aspect = x_limits[2] / y_limits[2]
+    aspect = DataAspect()
     limits = (x_limits, y_limits)
     environment_axis = Makie.Axis(
         figure;
@@ -43,52 +43,8 @@ function create_environment_axis(
         axis_kwargs...,
     )
 
-    visualize!(environment_axis, environment; viz_kwargs...)
+    Makie.plot!(environment_axis, environment; viz_kwargs...)
     environment_axis
-end
-
-function visualize_players!(
-    axis,
-    players;
-    player_colors = range(colorant"red", colorant"blue", length = blocksize(players[], 1)),
-)
-    for player_i in 1:blocksize(players[], 1)
-        player_color = player_colors[player_i]
-        position = Makie.@lift Makie.Point2f($players[Block(player_i)][1:2])
-        Makie.scatter!(axis, position; color = player_color)
-    end
-end
-
-function visualize_obstacle_bounds!(
-    axis,
-    players;
-    player_colors = range(colorant"red", colorant"blue", length = blocksize(players[], 1)),
-    obstacle_radius = 1.0,
-)
-    for player_i in 1:blocksize(players[], 1)
-        player_color = player_colors[player_i]
-        position = Makie.@lift Makie.Point2f($players[Block(player_i)][1:2])
-        Makie.scatter!(
-            axis,
-            position;
-            color = (player_color, 0.4),
-            markersize = 2 * obstacle_radius,
-            markerspace = :data,
-        )
-    end
-end
-
-function visualize_targets!(
-    axis,
-    targets;
-    player_colors = range(colorant"red", colorant"blue", length = blocksize(targets[], 1)),
-    marker = "+",
-)
-    for player_i in 1:blocksize(targets[], 1)
-        color = player_colors[player_i]
-        target = Makie.@lift Makie.Point2f($targets[Block(player_i)])
-        Makie.scatter!(axis, target; color, marker)
-    end
 end
 
 function visualize_sim_step(
@@ -100,7 +56,7 @@ function visualize_sim_step(
     ylims = (-5, 5),
     aspect = 1,
     player_colors = range(colorant"red", colorant"blue", length = num_players(game)),
-    player_names = ["Pursuer", "Evader"],
+    player_names = ["P$ii" for ii in 1:num_players(game)],
     weight_offset = 0.0,
     heading = "",
     show_legend = false,
@@ -126,7 +82,7 @@ function visualize_sim_step(
         ax_kwargs...,
     )
 
-    visualize!(ax, game.env)
+    Makie.plot!(ax, game.environment)
 
     plots = []
 
@@ -135,7 +91,7 @@ function visualize_sim_step(
         γ = Makie.@lift $s.strategy.substrategies[ii]
         pos = Makie.@lift Makie.Point2f($s.state[Block(ii)][1:2])
         scatter = Makie.scatter!(ax, pos; color)
-        visualize!(ax, γ; weight_offset, color)
+        Makie.plot!(ax, γ; weight_offset, color)
         push!(plots, [scatter])
     end
 

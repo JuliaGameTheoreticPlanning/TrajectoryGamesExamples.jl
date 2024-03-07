@@ -59,7 +59,7 @@ function TrajectoryGamesBase.control_bounds(dynamics::UnicycleDynamics)
     dynamics.control_bounds
 end
 
-function (sys::UnicycleDynamics)(state, control, t)
+function (sys::UnicycleDynamics)(state, control, time, parameters = nothing)
     px, py, v, θ = state
     F, τ = control
     dt = sys.dt
@@ -129,7 +129,7 @@ function TrajectoryGamesBase.control_bounds(dynamics::BicycleDynamics)
     dynamics.control_bounds
 end
 
-function (sys::BicycleDynamics)(state, control, t)
+function (sys::BicycleDynamics)(state, control, time, parameters = nothing)
     px, py, v, θ = state
     a, ϕ = control
     dt = sys.dt

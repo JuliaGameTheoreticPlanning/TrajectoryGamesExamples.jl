@@ -10,7 +10,7 @@ function two_player_meta_tag(;
     distance_metric = norm,
 )
     cost = let
-        function stage_cost(x, u, t, context_state)
+        function stage_cost(x, u, t, parameters)
             x1, x2 = blocks(x)
             u1, u2 = blocks(u)
             c =
@@ -26,6 +26,6 @@ function two_player_meta_tag(;
         TimeSeparableTrajectoryGameCost(stage_cost, reducer, ZeroSumCostStructure(), 1.0)
     end
     dynamics = ProductDynamics([dynamics for _ in 1:2] |> Tuple)
-    env = PolygonEnvironment(n_environment_sides, environment_radius)
-    TrajectoryGame(dynamics, cost, env, coupling_constraints)
+    environment = PolygonEnvironment(n_environment_sides, environment_radius)
+    TrajectoryGame(dynamics, cost, environment, coupling_constraints)
 end

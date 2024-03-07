@@ -11,10 +11,6 @@ struct MockStrategy{T<:TrajectoryGame}
     player_index::Int
 end
 
-function TrajectoryGamesBase.visualize!(canvas, γ::Makie.Observable{<:MockStrategy}; kwargs...)
-    nothing
-end
-
 function (strategy::MockStrategy)(x, t)
     zeros(control_dim(strategy.game.dynamics, strategy.player_index))
 end
