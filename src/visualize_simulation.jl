@@ -82,7 +82,7 @@ function visualize_sim_step(
         ax_kwargs...,
     )
 
-    Makie.plot!(ax, game.env)
+    Makie.plot!(ax, game.environment)
 
     plots = []
 
