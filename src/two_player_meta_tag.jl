@@ -10,7 +10,7 @@ function two_player_meta_tag(;
     distance_metric = norm,
 )
     cost = let
-        function stage_cost(x, u, t, context_state)
+        function stage_cost(x, u, t, parameters)
             x1, x2 = blocks(x)
             u1, u2 = blocks(u)
             c =
