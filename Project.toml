@@ -1,7 +1,7 @@
 name = "TrajectoryGamesExamples"
 uuid = "ff3fa34c-8d8f-519c-b5bc-31760c52507a"
 authors = ["David Fridovich-Keil<dfk@utexas.edu>", "Forrest Laine<forrest.laine@vanderbilt.edu>", "Lasse Peters<lasse.peters@mailbox.org>"]
-version = "0.1.10"
+version = "0.1.11"
 
 [deps]
 BlockArrays = "8e7c35d0-a365-5155-bbbb-fb81a777f24e"
@@ -15,6 +15,6 @@ TrajectoryGamesBase = "ac1ac542-73eb-4349-ae1b-660ab3609574"
 BlockArrays = "0.16"
 Colors = "0.12"
 InfiniteArrays = "0.12, 0.13, 0.14"
-Makie = "0.17, 0.18, 0.19, 0.20"
+Makie = "0.17, 0.18, 0.19, 0.20, 0.21"
 TrajectoryGamesBase = "0.2, 0.3"
 julia = "1.7"
